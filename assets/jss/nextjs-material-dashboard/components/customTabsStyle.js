@@ -57,6 +57,12 @@ const customTabsStyle = {
       margin: "-1px 5px 0 0 !important",
     },
   },
+  tabIconImage: {
+    width: "30px",
+    height: "30px",
+    verticalAlign: "middle",
+    paddingRight: "1em",
+  },
 };
 
 export default customTabsStyle;

@@ -84,8 +84,8 @@ export default class MyApp extends App {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <title>NextJS Material Dashboard by Creative Tim</title>
-          <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+          <title>p0ketools ~エメラルドを風化させないChannel~</title>
+          <script src="https://p0kem0nemerald.github.io/static/js/p0keutils.js"></script>
         </Head>
         <Layout>
           <Component {...pageProps} />

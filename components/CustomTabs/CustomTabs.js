@@ -44,7 +44,16 @@ export default function CustomTabs(props) {
         >
           {tabs.map((prop, key) => {
             var icon = {};
-            if (prop.tabIcon) {
+            if (prop.tabIconImage) {
+              icon = {
+                icon: (
+                  <img
+                    src={prop.tabIconImage}
+                    className={classes.tabIconImage}
+                  />
+                ),
+              };
+            } else if (prop.tabIcon) {
               icon = {
                 icon: <prop.tabIcon />,
               };
@@ -90,8 +99,9 @@ CustomTabs.propTypes = {
   tabs: PropTypes.arrayOf(
     PropTypes.shape({
       tabName: PropTypes.string.isRequired,
-      tabIcon: PropTypes.object,
       tabContent: PropTypes.node.isRequired,
+      tabIcon: PropTypes.object,
+      tabIconImage: PropTypes.string,
     })
   ),
   rtlActive: PropTypes.bool,

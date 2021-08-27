@@ -39,14 +39,15 @@ import {
   completedTasksChart,
 } from "variables/charts.js";
 
-import styles from "assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
+import styles from "../../assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 
 function Dashboard() {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   return (
     <div>
-      <GridContainer>
+      <p>Coming Soon...</p>
+      {/* <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
             <CardHeader color="warning" stats icon>
@@ -260,7 +261,7 @@ function Dashboard() {
             </CardBody>
           </Card>
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }

@@ -27,6 +27,8 @@ jobs:
 
       - name: Export Next.js app
         run: npm run export
+        env:
+          URL_PREFIX: p0ketools
 
       - name: add nojekyll
         run: touch ./out/.nojekyll

@@ -19,27 +19,31 @@
 import { ImCalculator } from "react-icons/im";
 import { GiBookmark } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
+import { MdPermMedia } from "react-icons/md";
 
 const dashboardRoutes = [
   {
     path: "/damage-calculator",
     name: "Damage calculator",
     icon: ImCalculator,
-
     layout: "/tools",
   },
   {
     path: "/pokedex",
     name: "Pokedex",
     icon: GiBookmark,
-
+    layout: "/tools",
+  },
+  {
+    path: "/materials",
+    name: "Materials",
+    icon: MdPermMedia,
     layout: "/tools",
   },
   {
     path: "/about",
     name: "About @p0kem0nEmerald",
     icon: CgProfile,
-
     layout: "",
   },
 ];

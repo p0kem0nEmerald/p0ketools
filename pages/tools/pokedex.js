@@ -12,7 +12,7 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import StatsRadarChart from "components/PokeChart/StatsRadarChart.js";
+import StatsRadarChart from "components/Pokemon/StatsRadarChart.js";
 import { Typography } from "@material-ui/core";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 
@@ -154,6 +154,10 @@ function Pokedex() {
                       type: "number",
                       value: pokedexNo,
                       onChange: handlePokeDexNoChange,
+                      inputProps: {
+                        min: 1,
+                        max: 386,
+                      },
                     }}
                   />
                 </GridItem>

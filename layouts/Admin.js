@@ -57,8 +57,12 @@ export default function Admin({ children, ...rest }) {
       <Sidebar
         routes={routes}
         logoText={"p0ketools"}
-        logo="/static/images/icon/favicon.png"
-        image="/static/images/background/rayquaza.gif"
+        logo={`${
+          process.env.ABS_URL_PREFIX || ""
+        }/static/images/icon/favicon.png`}
+        image={`${
+          process.env.ABS_URL_PREFIX || ""
+        }/static/images/background/rayquaza.gif`}
         handleDrawerToggle={handleDrawerToggle}
         open={mobileOpen}
         color="white"

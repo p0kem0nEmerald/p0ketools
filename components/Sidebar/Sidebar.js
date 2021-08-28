@@ -77,9 +77,8 @@ export default function Sidebar(props) {
   var brand = (
     <div className={classes.logo}>
       <a
-        href="https://www.youtube.com/c/p0kem0nEmerald"
+        href="/"
         className={classes.logoLink}
-        target="_blank"
         style={{ textTransform: "lowercase" }}
       >
         <div className={classes.logoImage}>

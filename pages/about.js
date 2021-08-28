@@ -82,7 +82,12 @@ function UserProfile() {
                 href="https://twitter.com/p0kem0nEmerald"
                 onClick={(e) => e.preventDefault()}
               >
-                <img src="/static/images/icon/favicon.png" alt="..." />
+                <img
+                  src={`${
+                    process.env.ABS_URL_PREFIX || ""
+                  }/static/images/icon/favicon.png`}
+                  alt="Profile Icon"
+                />
               </a>
             </CardAvatar>
             <CardBody profile>

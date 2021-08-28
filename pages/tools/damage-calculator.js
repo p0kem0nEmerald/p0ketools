@@ -62,29 +62,14 @@ function Dashboard() {
 
   return (
     <div>
-      Coming Soon....
-      {/* <GridContainer>
+      <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <PokestatsForm />
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
-          <Card>
-            <CardHeader color="dark" stats icon>
-              <CardIcon color="dark">
-                <Store />
-              </CardIcon>
-              <p className={classes.cardCategory}>Revenue</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
-            </CardHeader>
-            <CardFooter stats>
-              <div className={classes.stats}>
-                <DateRange />
-                Last 24 Hours
-              </div>
-            </CardFooter>
-          </Card>
+          <PokestatsForm />
         </GridItem>
-      </GridContainer> */}
+      </GridContainer>
     </div>
   );
 }

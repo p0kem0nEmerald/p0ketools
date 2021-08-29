@@ -248,10 +248,7 @@ export default function PokestatsForm(props) {
       <CardFooter stats>
         <GridItem xs={12}>
           <GridContainer xs={12}>
-            <GridItem xs={1}>
-              <img src={PokemonInfo.img.icon} />
-            </GridItem>
-            <GridItem xs={5}>
+            <GridItem xs={6}>
               <CustomAutocomplete
                 labelText="Pokemon"
                 id={`${id}-pokemonName`}
@@ -259,26 +256,24 @@ export default function PokestatsForm(props) {
                   fullWidth: true,
                 }}
                 optionData={PokemonList}
+                backgroundImage={PokemonInfo.img.icon}
                 autocompleteProps={{
                   onChange: handlePokemonNameChange,
                   value: PokemonInfo.pokemon,
                 }}
               />
             </GridItem>
-            <GridItem xs={1}>
-              <img src={PokemonInfo.img.item} />
-            </GridItem>
-            <GridItem xs={5}>
+            <GridItem xs={6}>
               <CustomAutocomplete
-                labelText="Item"
-                id={`${id}-Item`}
+                labelText="Ability"
+                id={`${id}-Ability`}
                 formControlProps={{
                   fullWidth: true,
                 }}
-                optionData={ItemList}
+                optionData={PokemonInfo.abilities}
                 autocompleteProps={{
-                  onChange: handleItemChange,
-                  value: PokemonInfo.item,
+                  onChange: handlePokemonAbilityChange,
+                  value: PokemonInfo.ability,
                 }}
               />
             </GridItem>
@@ -305,6 +300,22 @@ export default function PokestatsForm(props) {
             </GridItem>
             <GridItem xs={5}>
               <CustomAutocomplete
+                labelText="Item"
+                id={`${id}-Item`}
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                optionData={ItemList}
+                autocompleteProps={{
+                  onChange: handleItemChange,
+                  value: PokemonInfo.item,
+                }}
+                backgroundImage={PokemonInfo.img.item}
+                backgroundSize="30px"
+              />
+            </GridItem>
+            <GridItem xs={5}>
+              <CustomAutocomplete
                 labelText="Nature"
                 id={`${id}-Nature`}
                 formControlProps={{
@@ -314,21 +325,6 @@ export default function PokestatsForm(props) {
                 autocompleteProps={{
                   onChange: handlePokemonNatureChange,
                   value: PokemonInfo.nature,
-                }}
-              />
-            </GridItem>
-
-            <GridItem xs={5}>
-              <CustomAutocomplete
-                labelText="Ability"
-                id={`${id}-Ability`}
-                formControlProps={{
-                  fullWidth: true,
-                }}
-                optionData={PokemonInfo.abilities}
-                autocompleteProps={{
-                  onChange: handlePokemonAbilityChange,
-                  value: PokemonInfo.ability,
                 }}
               />
             </GridItem>
@@ -376,12 +372,12 @@ export default function PokestatsForm(props) {
                             min: target.min,
                             max: target.max,
                             style: {
-                              backgroundColor:
+                              color:
                                 PokemonInfo.naturecorr[i] > 1
                                   ? "red"
                                   : PokemonInfo.naturecorr[i] < 1
                                   ? "blue"
-                                  : "transparent",
+                                  : "inherit",
                               margin: "5px",
                               paddingLeft: "5px",
                             },

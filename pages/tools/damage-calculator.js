@@ -62,14 +62,15 @@ function Dashboard() {
 
   return (
     <div>
-      <GridContainer>
+      Comming Soon....
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <PokestatsForm />
         </GridItem>
         <GridItem xs={12} sm={12} md={6}>
           <PokestatsForm />
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }

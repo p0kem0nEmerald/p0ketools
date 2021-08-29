@@ -12,6 +12,7 @@ import Clear from "@material-ui/icons/Clear";
 import Check from "@material-ui/icons/Check";
 // core components
 import styles from "assets/jss/nextjs-material-dashboard/components/customInputStyle.js";
+import noimage from "assets/images/noimage.png";
 
 export default function CustomInput(props) {
   const useStyles = makeStyles(styles);
@@ -21,7 +22,9 @@ export default function CustomInput(props) {
     autocompleteProps,
     labelText,
     id,
-    labelProps,
+    backgroundImage,
+    backgroundSize,
+    backgroundPosition,
     error,
     success,
     optionData,
@@ -56,6 +59,12 @@ export default function CustomInput(props) {
             label={labelText}
             margin="normal"
             variant="outlined"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: backgroundPosition,
+              backgroundSize: backgroundSize,
+            }}
           />
         )}
         id={id}
@@ -71,12 +80,20 @@ export default function CustomInput(props) {
   );
 }
 
+CustomInput.defaultProps = {
+  backgroundImage: noimage,
+  backgroundSize: "50px",
+  backgroundPosition: "center right 30px",
+};
+
 CustomInput.propTypes = {
   labelText: PropTypes.node,
-  labelProps: PropTypes.object,
   id: PropTypes.string,
   autocompleteProps: PropTypes.array,
   formControlProps: PropTypes.object,
+  backgroundImage: PropTypes.string,
+  backgroundSize: PropTypes.string,
+  backgroundPosition: PropTypes.string,
   error: PropTypes.bool,
   success: PropTypes.bool,
   optionData: PropTypes.array,

@@ -1,6 +1,4 @@
 import React from "react";
-// react plugin for creating charts
-import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -133,6 +131,7 @@ function DamageCalculator() {
             Dpokemon: Defender.pokemon,
             Aivals: Object.keys(Attacker.ivs),
             Alv: Attacker.lv,
+            weather: BattleSituation.field.weather,
           });
           var [power, powers] = Array.isArray(power)
             ? [power[0], power]

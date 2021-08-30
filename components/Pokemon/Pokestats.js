@@ -2,13 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+import Checkbox from "@material-ui/core/Checkbox";
+// @material-ui/icons
+import Check from "@material-ui/icons/Check";
 // core components
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
 
-import Danger from "components/Typography/Danger.js";
-import Warning from "@material-ui/icons/Warning";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardIcon from "components/Card/CardIcon.js";
@@ -21,63 +22,14 @@ import noimage from "../../assets/images/noimage.png";
 export default function PokestatsForm(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
-  // const { PokemonInfo, setPokemonInfo, ...rest } = props;
-  const { id, ...rest } = props;
+
+  const { id, PokemonInfo, setPokemonInfo } = props;
+
   const [PokemonList, setPokemonList] = React.useState([]);
   const [NatureList, setNatureList] = React.useState([]);
   const [ItemList, setItemList] = React.useState([]);
-  const [PokemonInfo, setPokemonInfo] = React.useState({
-    lv: 50,
-    isAttack: true,
-    pokemon: "",
-    img: {
-      sprites: "",
-      icon: "",
-      item: "",
-    },
-    item: "",
-    ability: "",
-    abilities: [""],
-    nature: "",
-    naturecorr: Array(6).fill(1),
-    happiness: 255,
-    rank: 0,
-    status: "",
-    bstats: {
-      H: 100,
-      A: 100,
-      B: 100,
-      C: 100,
-      D: 100,
-      S: 100,
-    },
-    ivs: {
-      H: 31,
-      A: 31,
-      B: 31,
-      C: 31,
-      D: 31,
-      S: 31,
-    },
-    evs: {
-      H: 0,
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0,
-      S: 0,
-    },
-    rstats: {
-      H: 0,
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0,
-      S: 0,
-    },
-    remainingHP: 1,
-  });
-
+  const [StatusList, setStatusList] = React.useState([]);
+  const [AbilityList, setAbilityList] = React.useState([]);
   /**
    * Recalculate the Pokemon Stats.
    * @param {Array} pokeinfo The current parameters of "PokemonInfo".
@@ -105,32 +57,70 @@ export default function PokestatsForm(props) {
         D: D,
         S: S,
       },
+      remainingHP: H,
     };
   };
+
   /**
-   * Update the Pokemon Name and the various status (abilities, bstats, etc.)
+   * Update the Pokemon Name and what follows.
+   * @param {string} pokemon The name of pokemon.
    * @param {Array} pokeinfo The current parameters of "PokemonInfo".
    * @return {Array} Updated parameters of "PokemonInfo".
    */
   const updatePokemonName = (pokemon, pokeinfo) => {
+    // Set options for Pokemon Data
     let pokedata = p0ke.data.pokemon[pokemon];
-    console.log(pokeinfo);
-    return {
+    /* <--- Ability Data --- */
+    let AbilityData = pokedata.abilities.filter((e) => {
+      return e.length > 0;
+    });
+    setAbilityList(AbilityData);
+    /* --- Ability Data ---> */
+    return updateMove(pokemon, {
       ...pokeinfo,
       pokemon: pokemon,
       img: {
-        ...pokeinfo["img"],
+        ...pokeinfo.img,
         sprites: p0ke.img.getImgSrcPokemonSprites(pokemon, "front", false),
         icon: p0ke.img.getImgSrcPokemonIcon(pokemon),
       },
       bstats: pokedata.bstats,
       types: pokedata.types,
-      abilities: pokedata.abilities.filter((e) => {
-        return e.length > 0;
-      }),
-      ability: pokedata.abilities[0],
+      ability: p0ke.utils.randomSelect(AbilityData),
+    });
+  };
+
+  const updateMove = (pokemon, pokeinfo) => {
+    /* <--- Move Data --- */
+    let MoveData = p0ke.data.pokemove[
+      p0ke.utils.canonicalizePokeName(pokemon)
+    ].map((e) => {
+      return e.join(".");
+    });
+    let move_name_full = p0ke.utils.randomSelect(MoveData);
+    let move_name = move_name_full.split(".")[1];
+    let mdata = p0ke.data.move.move[move_name];
+    return {
+      ...pokeinfo,
+      move: {
+        ...pokeinfo.move,
+        name: move_name_full,
+        list: MoveData,
+        type: mdata.type,
+        class: mdata.class,
+        range: mdata.range,
+        base_power: parseInt(mdata.power) | 0,
+        damage_fixed: mdata.damage_fixed,
+      },
     };
   };
+
+  /**
+   * Update the Pokemon Nature and what follows.
+   * @param {string} nature The name of nature
+   * @param {Array} pokeinfo The current parameters of "PokemonInfo".
+   * @return {Array} Updated parameters of "PokemonInfo".
+   */
   const updatePokemonNature = (nature, pokeinfo) => {
     return {
       ...pokeinfo,
@@ -140,67 +130,124 @@ export default function PokestatsForm(props) {
       ),
     };
   };
+
+  /**
+   * Update the Other Parameters (which DOES NOT have what follows.)
+   * @param {string} nature The name of nature
+   * @param {Array} pokeinfo The current parameters of "PokemonInfo".
+   * @return {Array} Updated parameters of "PokemonInfo".
+   */
+  const updateOtherSates = (key, value, pokeinfo) => {
+    return {
+      ...pokeinfo,
+      [key]: value,
+    };
+  };
+
+  /**
+   * Update the Pokemon Item and what follows.
+   * @param {string} item The name of item
+   * @param {Array} pokeinfo The current parameters of "PokemonInfo".
+   * @return {Array} Updated parameters of "PokemonInfo".
+   */
   const updatePokemonItem = (item, pokeinfo) => {
     return {
       ...pokeinfo,
       item: item,
       img: {
-        ...pokeinfo["img"],
+        ...pokeinfo.img,
         item: p0ke.img.getImgSrcItem(item),
       },
     };
   };
+
+  const updatePokemonStatus = (status, pokeinfo) => {
+    return {
+      ...pokeinfo,
+      status: status,
+      img: {
+        ...pokeinfo.img,
+        status: p0ke.img.getImgSrcStatus(status, true),
+      },
+    };
+  };
+
+  const updateInputValue = (event, pokeinfo) => {
+    var tmp = event.target.name.split(".");
+    if (tmp.length == 2) {
+      // Ivs and Evs
+      pokeinfo = {
+        ...pokeinfo,
+        [tmp[0]]: {
+          ...pokeinfo[tmp[0]],
+          [tmp[1]]: event.target.value,
+        },
+      };
+    } else {
+      // Lv and Nature
+      pokeinfo = {
+        ...pokeinfo,
+        [event.target.name]: event.target.value,
+      };
+    }
+    return pokeinfo;
+  };
+
+  /* <--- Pokemon Name --- */
   const handlePokemonNameChange = (_, newValue) => {
     var pokeinfo = updatePokemonName(newValue, PokemonInfo);
     pokeinfo = recalculatePokemonStats(pokeinfo);
     setPokemonInfo(pokeinfo);
   };
+  /* <--- Pokemon Nature --- */
   const handlePokemonNatureChange = (_, newValue) => {
     var pokeinfo = updatePokemonNature(newValue, PokemonInfo);
     pokeinfo = recalculatePokemonStats(pokeinfo);
     setPokemonInfo(pokeinfo);
   };
-  const handlePokemonNurturingChange = (event, newValue) => {
-    var tmp = event.target.name.split(".");
-    var pokeinfo;
-    if (tmp.length == 2) {
-      pokeinfo = {
-        ...PokemonInfo,
-        [tmp[0]]: {
-          ...PokemonInfo[tmp[0]],
-          [tmp[1]]: event.target.value,
-        },
-      };
-    } else {
-      pokeinfo = {
-        ...PokemonInfo,
-        [event.target.name]: event.target.value,
-      };
-    }
-    pokeinfo = recalculatePokemonStats(pokeinfo);
+  /* <--- Pokemon Status --- */
+  const handleStatusChange = (_, newValue) => {
+    var pokeinfo = updatePokemonStatus(newValue, PokemonInfo);
     setPokemonInfo(pokeinfo);
   };
+  /* <--- Pokemon Nurturing (lv, ivs, evs) --- */
+  const handlePokemonNurturingChange = (event) => {
+    var pokeinfo = updateInputValue(event, PokemonInfo);
+    var pokeinfo = recalculatePokemonStats(pokeinfo);
+    setPokemonInfo(pokeinfo);
+  };
+  /* <--- Pokemon Ability --- */
   const handlePokemonAbilityChange = (_, newValue) => {
     setPokemonInfo({
       ...PokemonInfo,
       ability: newValue,
     });
   };
+  /* <--- Pokemon Item --- */
   const handleItemChange = (_, newValue) => {
-    setPokemonInfo(updatePokemonItem(newValue, Pokemon));
+    setPokemonInfo(updatePokemonItem(newValue, PokemonInfo));
   };
-  const handlePokemonStatsChange = (_, newValue) => {
-    console.log("Calculate Damge!!!");
+  /* <--- Pokemon Stats (Real Stats) --- */
+  const handlePokemonStatsChange = (event) => {
+    var pokeinfo = updateInputValue(event, PokemonInfo);
+    setPokemonInfo(pokeinfo);
   };
 
+  /* <--- Initialization --- */
   React.useEffect(() => {
-    /* <--- Initialization --- */
+    // Set a Status Ailment
+    var StatusList = Object.keys(p0ke.data.status.main);
+    setStatusList(StatusList);
+    var pokeinfo = updatePokemonStatus(
+      p0ke.utils.randomSelect(StatusList),
+      PokemonInfo
+    );
     // Set a random Pokemon
     var PokemonList = Object.keys(p0ke.data.pokemon);
     setPokemonList(PokemonList);
     var pokeinfo = updatePokemonName(
       p0ke.utils.randomSelect(PokemonList),
-      PokemonInfo
+      pokeinfo
     );
     // Set a random nature
     var NatureList = Object.keys(p0ke.data.nature.name2id);
@@ -219,14 +266,13 @@ export default function PokestatsForm(props) {
     pokeinfo = recalculatePokemonStats(pokeinfo);
     // Initialize with 'pokeinfo' parameters
     setPokemonInfo(pokeinfo);
-    console.log("Initialized 'PokemonInfo' with the following parameters");
-    console.log(PokemonInfo);
-    /* --- Initialization ---> */
+    // console.log("Initialized 'PokemonInfo' with the following parameters");
+    // console.log(PokemonInfo);
   }, []);
+  /* --- Initialization ---> */
 
   const stats = ["H", "A", "B", "C", "D", "S"];
   const colorTheme = PokemonInfo.isAttack ? "rose" : "info";
-  const StatusAilment = ["", "どく", "やけど", "ねむり", "マヒ", "こんらん"];
   return (
     <Card>
       <CardHeader color={colorTheme} stats icon>
@@ -251,7 +297,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={6}>
               <CustomAutocomplete
                 labelText="Pokemon"
-                id={`${id}-pokemonName`}
+                // id={`${id}-pokemonName`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -266,11 +312,11 @@ export default function PokestatsForm(props) {
             <GridItem xs={6}>
               <CustomAutocomplete
                 labelText="Ability"
-                id={`${id}-Ability`}
+                // id={`${id}-Ability`}
                 formControlProps={{
                   fullWidth: true,
                 }}
-                optionData={PokemonInfo.abilities}
+                optionData={AbilityList}
                 autocompleteProps={{
                   onChange: handlePokemonAbilityChange,
                   value: PokemonInfo.ability,
@@ -282,7 +328,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={2}>
               <CustomInput
                 labelText="Lv."
-                id={`${id}-lv`}
+                // id={`${id}-lv`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -301,7 +347,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={5}>
               <CustomAutocomplete
                 labelText="Item"
-                id={`${id}-Item`}
+                // id={`${id}-Item`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -317,7 +363,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={5}>
               <CustomAutocomplete
                 labelText="Nature"
-                id={`${id}-Nature`}
+                // id={`${id}-Nature`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -359,7 +405,7 @@ export default function PokestatsForm(props) {
                     <GridItem xs={2}>
                       <CustomInput
                         labelText={`${target.label}${e}`}
-                        id={`${id}-${target.label}${e}`}
+                        // id={`${id}-${target.label}${e}`}
                         formControlProps={{
                           fullWidth: true,
                         }}
@@ -394,13 +440,13 @@ export default function PokestatsForm(props) {
             <GridItem xs={2}>
               <CustomInput
                 labelText="remainingHP"
-                id={`${id}-rHP`}
+                // id={`${id}-rHP`}
                 formControlProps={{
                   fullWidth: true,
                 }}
                 inputProps={{
                   type: "number",
-                  name: `remaining HP`,
+                  name: `remainingHP`,
                   value: PokemonInfo.remainingHP,
                   onChange: handlePokemonStatsChange,
                   inputProps: {
@@ -413,7 +459,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={2}>
               <CustomInput
                 labelText="Happiness"
-                id={`${id}-happiness`}
+                // id={`${id}-happiness`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -432,7 +478,7 @@ export default function PokestatsForm(props) {
             <GridItem xs={2}>
               <CustomInput
                 labelText="Rank"
-                id={`${id}-rank`}
+                // id={`${id}-rank`}
                 formControlProps={{
                   fullWidth: true,
                 }}
@@ -444,6 +490,14 @@ export default function PokestatsForm(props) {
                   inputProps: {
                     min: -6,
                     max: 6,
+                    style: {
+                      color:
+                        PokemonInfo.rank > 0
+                          ? "red"
+                          : PokemonInfo.rank < 0
+                          ? "blue"
+                          : "inherit",
+                    },
                   },
                 }}
               />
@@ -451,13 +505,14 @@ export default function PokestatsForm(props) {
             <GridItem xs={6}>
               <CustomAutocomplete
                 labelText="Status"
-                id={`${id}-Status`}
+                // id={`${id}-Status`}
                 formControlProps={{
                   fullWidth: true,
                 }}
-                optionData={ItemList}
+                backgroundImage={PokemonInfo.img.status}
+                optionData={StatusList}
                 autocompleteProps={{
-                  onChange: handleItemChange,
+                  onChange: handleStatusChange,
                   value: PokemonInfo.status,
                 }}
               />
@@ -471,35 +526,74 @@ export default function PokestatsForm(props) {
 
 PokestatsForm.propTypes = {
   id: PropTypes.string,
-  // PokemonInfo: PropTypes.object, //.isRequired,
-  // setPokemonInfo: PropTypes.func, //.isRequired,
+  PokemonInfo: PropTypes.object.isRequired,
+  setPokemonInfo: PropTypes.func.isRequired,
 };
 
 PokestatsForm.defaultProps = {
   id: "",
-  // PokemonInfo: {
-  //   isAttack: true,
-  //   pokemon: "",
-  //   lv: 50,
-  //   img: {
-  //     sprites: "",
-  //     icon: "",
-  //   },
-  //   ivs: {
-  //     H: 31,
-  //     A: 31,
-  //     B: 31,
-  //     C: 31,
-  //     D: 31,
-  //     S: 31,
-  //   },
-  //   evs: {
-  //     H: 0,
-  //     A: 0,
-  //     B: 0,
-  //     C: 0,
-  //     D: 0,
-  //     S: 0,
-  //   },
-  // },
+  PokemonInfo: {
+    lv: 50,
+    isAttack: true,
+    pokemon: "",
+    img: {
+      sprites: "",
+      icon: "",
+      item: "",
+      status: "",
+    },
+    move: {
+      name: "",
+      list: [],
+      type: "",
+      class: "",
+      range: "",
+      base_power: 0,
+      base_powers: [],
+      damage_fixed: false,
+      hitCritical: false,
+    },
+    types: Array(2).fill(""),
+    item: "",
+    ability: "",
+    abilities: [""],
+    nature: "",
+    naturecorr: Array(6).fill(1),
+    happiness: 255,
+    rank: 0,
+    status: "",
+    bstats: {
+      H: 100,
+      A: 100,
+      B: 100,
+      C: 100,
+      D: 100,
+      S: 100,
+    },
+    ivs: {
+      H: 31,
+      A: 31,
+      B: 31,
+      C: 31,
+      D: 31,
+      S: 31,
+    },
+    evs: {
+      H: 0,
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
+      S: 0,
+    },
+    rstats: {
+      H: 0,
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0,
+      S: 0,
+    },
+    remainingHP: 1,
+  },
 };

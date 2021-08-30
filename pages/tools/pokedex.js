@@ -94,7 +94,7 @@ function Pokedex() {
     pokename = setPokemonDescription(p0ke.data.pokedex[pokename_cano]);
     setPokemonMoves(
       p0ke.data.pokemove[pokename_cano].map((e) => {
-        let md = p0ke.data.move[e[1]];
+        let md = p0ke.data.move.move[e[1]];
         return [
           e[0],
           e[1],

@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 // @material-ui/icons
@@ -14,13 +13,14 @@ import Check from "@material-ui/icons/Check";
 import styles from "assets/jss/nextjs-material-dashboard/components/customInputStyle.js";
 import noimage from "assets/images/noimage.png";
 
-export default function CustomInput(props) {
+export default function CustomAutocomplete(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
   const {
     formControlProps,
     autocompleteProps,
     labelText,
+    noMargin,
     id,
     backgroundImage,
     backgroundSize,
@@ -30,22 +30,15 @@ export default function CustomInput(props) {
     optionData,
   } = props;
 
-  const labelClasses = classNames({
-    [" " + classes.labelRootError]: error,
-    [" " + classes.labelRootSuccess]: success && !error,
-  });
-  const underlineClasses = classNames({
-    [classes.underlineError]: error,
-    [classes.underlineSuccess]: success && !error,
-    [classes.underline]: true,
-  });
   const marginTop = classNames({
     [classes.marginTop]: labelText === undefined,
   });
   return (
     <FormControl
       {...formControlProps}
-      className={formControlProps.className + " " + classes.formControl}
+      className={
+        formControlProps.className + (noMargin ? "" : classes.formControl)
+      }
     >
       <Autocomplete
         classes={{
@@ -59,12 +52,16 @@ export default function CustomInput(props) {
             label={labelText}
             margin="normal"
             variant="outlined"
-            style={{
-              backgroundImage: `url(${backgroundImage})`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: backgroundPosition,
-              backgroundSize: backgroundSize,
-            }}
+            style={
+              backgroundImage
+                ? {
+                    backgroundImage: `url(${backgroundImage})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: backgroundPosition,
+                    backgroundSize: backgroundSize,
+                  }
+                : {}
+            }
           />
         )}
         id={id}
@@ -80,13 +77,14 @@ export default function CustomInput(props) {
   );
 }
 
-CustomInput.defaultProps = {
+CustomAutocomplete.defaultProps = {
   backgroundImage: noimage,
   backgroundSize: "50px",
   backgroundPosition: "center right 30px",
+  noMargin: false,
 };
 
-CustomInput.propTypes = {
+CustomAutocomplete.propTypes = {
   labelText: PropTypes.node,
   id: PropTypes.string,
   autocompleteProps: PropTypes.array,
@@ -94,6 +92,7 @@ CustomInput.propTypes = {
   backgroundImage: PropTypes.string,
   backgroundSize: PropTypes.string,
   backgroundPosition: PropTypes.string,
+  noMargin: PropTypes.bool,
   error: PropTypes.bool,
   success: PropTypes.bool,
   optionData: PropTypes.array,

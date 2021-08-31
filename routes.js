@@ -20,6 +20,7 @@ import { ImCalculator } from "react-icons/im";
 import { GiBookmark } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { MdPermMedia } from "react-icons/md";
+import { HiOutlineTranslate } from "react-icons/hi";
 
 const dashboardRoutes = [
   {
@@ -32,6 +33,12 @@ const dashboardRoutes = [
     path: "/pokedex",
     name: "Pokedex",
     icon: GiBookmark,
+    layout: "/tools",
+  },
+  {
+    path: "/poke-english",
+    name: "Pokemon English",
+    icon: HiOutlineTranslate,
     layout: "/tools",
   },
   {

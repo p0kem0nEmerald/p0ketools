@@ -12,6 +12,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import PersonIcon from "@material-ui/icons/Person";
 import CloudIcon from "@material-ui/icons/Cloud";
 import PlaceIcon from "@material-ui/icons/Place";
+import TerrainIcon from "@material-ui/icons/Terrain";
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
@@ -28,6 +29,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CustomButton from "components/CustomButtons/Button.js";
 import DamageTable from "components/Table/DamageTable.js";
+import Success from "components/Typography/Success.js";
 
 import dashboardStyle from "../../assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 import checkboxAdnRadioStyle from "assets/jss/nextjs-material-dashboard/checkboxAdnRadioStyle.js";
@@ -272,6 +274,11 @@ function DamageCalculator() {
 
   return (
     <div>
+      <Success>
+        {
+          "※ 第三世代の環境下でダメージ計算を行います。（詳しい計算の過程が知りたい方は、[F12] (Windows) or [Command]+[Option]+[I] (Mac) を押してChromeの開発者ツールを開き、[Console]タブを確認してください。"
+        }
+      </Success>
       <GridContainer xs={12}>
         <GridItem xs={12} lg={6}>
           <CustomTabs
@@ -468,7 +475,7 @@ function DamageCalculator() {
                     {
                       type: "select",
                       name: "terrain",
-                      icon: <CloudIcon />,
+                      icon: <TerrainIcon />,
                       optionData: TerrainList,
                       labelText: "地形",
                     },

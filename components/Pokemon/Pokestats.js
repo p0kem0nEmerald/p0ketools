@@ -23,7 +23,7 @@ export default function PokestatsForm(props) {
   const useStyles = makeStyles(styles);
   const classes = useStyles();
 
-  const { id, PokemonInfo, setPokemonInfo } = props;
+  const { id, PokemonInfo, setPokemonInfo, onPokemonInfoChange } = props;
 
   const [PokemonList, setPokemonList] = React.useState([]);
   const [NatureList, setNatureList] = React.useState([]);
@@ -68,51 +68,57 @@ export default function PokestatsForm(props) {
    * @return {Array} Updated parameters of "PokemonInfo".
    */
   const updatePokemonName = (pokemon, pokeinfo) => {
-    // Set options for Pokemon Data
-    let pokedata = p0ke.data.pokemon[pokemon];
-    /* <--- Ability Data --- */
-    let AbilityData = pokedata.abilities.filter((e) => {
-      return e.length > 0;
-    });
-    setAbilityList(AbilityData);
-    /* --- Ability Data ---> */
-    return updateMove(pokemon, {
-      ...pokeinfo,
-      pokemon: pokemon,
-      img: {
-        ...pokeinfo.img,
-        sprites: p0ke.img.getImgSrcPokemonSprites(pokemon, "front", false),
-        icon: p0ke.img.getImgSrcPokemonIcon(pokemon),
-      },
-      bstats: pokedata.bstats,
-      types: pokedata.types,
-      ability: p0ke.utils.randomSelect(AbilityData),
-    });
+    if (pokemon !== null && pokemon in p0ke.data.pokemon) {
+      // Set options for Pokemon Data
+      let pokedata = p0ke.data.pokemon[pokemon];
+      /* <--- Ability Data --- */
+      let AbilityData = pokedata.abilities.filter((e) => {
+        return e.length > 0;
+      });
+      setAbilityList(AbilityData);
+      /* --- Ability Data ---> */
+      return updateMove(pokemon, {
+        ...pokeinfo,
+        pokemon: pokemon,
+        img: {
+          ...pokeinfo.img,
+          sprites: p0ke.img.getImgSrcPokemonSprites(pokemon, "front", false),
+          icon: p0ke.img.getImgSrcPokemonIcon(pokemon),
+        },
+        bstats: pokedata.bstats,
+        types: pokedata.types,
+        ability: p0ke.utils.randomSelect(AbilityData),
+      });
+    } else {
+      return pokeinfo;
+    }
   };
 
   const updateMove = (pokemon, pokeinfo) => {
-    /* <--- Move Data --- */
-    let MoveData = p0ke.data.pokemove[
-      p0ke.utils.canonicalizePokeName(pokemon)
-    ].map((e) => {
-      return e.join(".");
-    });
-    let move_name_full = p0ke.utils.randomSelect(MoveData);
-    let move_name = move_name_full.split(".")[1];
-    let mdata = p0ke.data.move.move[move_name];
-    return {
-      ...pokeinfo,
-      move: {
-        ...pokeinfo.move,
-        name: move_name_full,
-        list: MoveData,
-        type: mdata.type,
-        class: mdata.class,
-        range: mdata.range,
-        base_power: parseInt(mdata.power) | 0,
-        damage_fixed: mdata.damage_fixed,
-      },
-    };
+    if (pokemon !== null && pokemon in p0ke.data.pokemon) {
+      /* <--- Move Data --- */
+      let MoveData = p0ke.data.pokemove[
+        p0ke.utils.canonicalizePokeName(pokemon)
+      ].map((e) => {
+        return e.join(".");
+      });
+      let move_name_full = p0ke.utils.randomSelect(MoveData);
+      let move_name = move_name_full.split(".")[1];
+      let mdata = p0ke.data.move.move[move_name];
+      return {
+        ...pokeinfo,
+        move: {
+          ...pokeinfo.move,
+          name: move_name_full,
+          list: MoveData,
+          type: mdata.type,
+          class: mdata.class,
+          range: mdata.range,
+          base_power: parseInt(mdata.power) | 0,
+          damage_fixed: mdata.damage_fixed,
+        },
+      };
+    }
   };
 
   /**
@@ -197,40 +203,44 @@ export default function PokestatsForm(props) {
   const handlePokemonNameChange = (_, newValue) => {
     var pokeinfo = updatePokemonName(newValue, PokemonInfo);
     pokeinfo = recalculatePokemonStats(pokeinfo);
-    setPokemonInfo(pokeinfo);
+    setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Nature --- */
   const handlePokemonNatureChange = (_, newValue) => {
     var pokeinfo = updatePokemonNature(newValue, PokemonInfo);
     pokeinfo = recalculatePokemonStats(pokeinfo);
-    setPokemonInfo(pokeinfo);
+    setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Status --- */
   const handleStatusChange = (_, newValue) => {
     var pokeinfo = updatePokemonStatus(newValue, PokemonInfo);
-    setPokemonInfo(pokeinfo);
+    setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Nurturing (lv, ivs, evs) --- */
   const handlePokemonNurturingChange = (event) => {
     var pokeinfo = updateInputValue(event, PokemonInfo);
     var pokeinfo = recalculatePokemonStats(pokeinfo);
-    setPokemonInfo(pokeinfo);
+    setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Ability --- */
   const handlePokemonAbilityChange = (_, newValue) => {
-    setPokemonInfo({
-      ...PokemonInfo,
-      ability: newValue,
-    });
+    setPokemonInfo(
+      onPokemonInfoChange({
+        ...PokemonInfo,
+        ability: newValue,
+      })
+    );
   };
   /* <--- Pokemon Item --- */
   const handleItemChange = (_, newValue) => {
-    setPokemonInfo(updatePokemonItem(newValue, PokemonInfo));
+    setPokemonInfo(
+      onPokemonInfoChange(updatePokemonItem(newValue, PokemonInfo))
+    );
   };
   /* <--- Pokemon Stats (Real Stats) --- */
   const handlePokemonStatsChange = (event) => {
     var pokeinfo = updateInputValue(event, PokemonInfo);
-    setPokemonInfo(pokeinfo);
+    setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
 
   /* <--- Initialization --- */
@@ -528,6 +538,7 @@ PokestatsForm.propTypes = {
   id: PropTypes.string,
   PokemonInfo: PropTypes.object.isRequired,
   setPokemonInfo: PropTypes.func.isRequired,
+  onPokemonInfoChange: PropTypes.func,
 };
 
 PokestatsForm.defaultProps = {
@@ -596,4 +607,5 @@ PokestatsForm.defaultProps = {
     },
     remainingHP: 1,
   },
+  onPokemonInfoChange: () => {},
 };

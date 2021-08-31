@@ -27,11 +27,10 @@ import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import CustomButton from "components/CustomButtons/Button.js";
-import CustomTable from "components/Table/Table.js";
+import DamageTable from "components/Table/DamageTable.js";
 
 import dashboardStyle from "../../assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
 import checkboxAdnRadioStyle from "assets/jss/nextjs-material-dashboard/checkboxAdnRadioStyle.js";
-import { Battery20 } from "@material-ui/icons";
 
 const styles = {
   ...dashboardStyle,
@@ -85,21 +84,38 @@ function DamageCalculator() {
   const [MoveClassList, setMoveClassList] = React.useState([]);
   const [MoveRangeList, setMoveRangeList] = React.useState([]);
   const [WeatherList, setWeatherList] = React.useState([]);
+  const [TerrainList, setTerrainList] = React.useState([]);
   const [
     WhereTheBattlePokemonList,
     setWhereTheBattlePokemonList,
   ] = React.useState([]);
 
   const inverseAD = () => {
-    setIsMyPokeAttacker(!IsMyPokeAttacker);
-    setMyPokemonInfo({
-      ...MyPokemonInfo,
-      isAttack: !MyPokemonInfo.isAttack,
-    });
-    setOpPokemonInfo({
-      ...OpPokemonInfo,
-      isAttack: !OpPokemonInfo.isAttack,
-    });
+    if (IsMyPokeAttacker) {
+      setIsMyPokeAttacker(false);
+      setMyPokemonInfo({
+        ...MyPokemonInfo,
+        isAttack: false,
+      });
+      setOpPokemonInfo(
+        onPokemonInfoChange({
+          ...OpPokemonInfo,
+          isAttack: true,
+        })
+      );
+    } else {
+      setIsMyPokeAttacker(true);
+      setOpPokemonInfo({
+        ...OpPokemonInfo,
+        isAttack: false,
+      });
+      setMyPokemonInfo(
+        onPokemonInfoChange({
+          ...MyPokemonInfo,
+          isAttack: true,
+        })
+      );
+    }
   };
 
   const handleMoveInfoChange = (target, newValue) => {
@@ -109,18 +125,22 @@ function DamageCalculator() {
       move: {
         ...Attacker.move,
         [target]: newValue,
+        ...(target == "type"
+          ? {
+              class: p0ke.data.type.data[newValue].move_class,
+            }
+          : {}),
       },
     });
   };
 
-  const handleMoveChange = (evt, newValue) => {
+  const redetermineMove = (newValue, Attacker) => {
     if (newValue !== null) {
       if (newValue.split(".").length === 2) {
         var move_name = newValue.split(".")[1];
         var mdata = p0ke.data.move.move[move_name];
         if (!(mdata == undefined)) {
           var Defender = DefenderPokemon();
-          var Attacker = AttackerPokemon();
           var { power, type, fixed } = p0ke.move.determine_move_base_power({
             move_name: move_name,
             Ahappiness: Attacker.happiness,
@@ -129,29 +149,37 @@ function DamageCalculator() {
             AremainingHP: Attacker.remainingHP,
             DmaxHP: Defender.remainingHP,
             Dpokemon: Defender.pokemon,
-            Aivals: Object.keys(Attacker.ivs),
+            Aivals: Object.values(Attacker.ivs),
             Alv: Attacker.lv,
             weather: BattleSituation.field.weather,
           });
+          console.log([type, Object.keys(Attacker.ivs)]);
           var [power, powers] = Array.isArray(power)
             ? [power[0], power]
             : [power || parseInt(mdata.power) || 0, []];
           var mdata = p0ke.data.move.move[move_name];
           var type = type || mdata.type;
-          setAttackerPokemon()({
+          return {
             ...Attacker,
             move: {
               ...Attacker.move,
               name: newValue,
               type: type,
+              class: mdata.class,
+              range: mdata.range,
               base_power: power,
               base_powers: powers,
               damage_fixed: fixed,
             },
-          });
+          };
         }
       }
     }
+    return Attacker;
+  };
+
+  const handleMoveChange = (evt, newValue) => {
+    setAttackerPokemon()(redetermineMove(newValue, AttackerPokemon()));
   };
 
   const handleBattleSituationChange = (type, tabName, rowName, newValue) => {
@@ -185,7 +213,7 @@ function DamageCalculator() {
       };
     };
     var damages = p0ke.damage.calculate_damage({
-      move_name: Attacker.move.name,
+      move_name: Attacker.move.name.split(".")[1],
       move_type: Attacker.move.type,
       move_class: Attacker.move.class,
       move_range: Attacker.move.range,
@@ -193,6 +221,7 @@ function DamageCalculator() {
       move_damage_fixed: Attacker.move.damage_fixed,
       attacker: preprocessing(Attacker),
       defender: preprocessing(Defender),
+      terrain: BattleSituation.field.terrain,
       helpingHand: BattleSituation.attacker.helping_hand,
       isMudsportField: BattleSituation.field.isMudsportField,
       isWatersportField: BattleSituation.field.isWatersportField,
@@ -209,9 +238,17 @@ function DamageCalculator() {
     setDamageData([
       damages,
       damages.map((e) => {
-        return ((parseInt(e) / Defender.rstats.H) * 100).toFixed(1);
+        return (parseInt(e) / Defender.rstats.H) * 100;
       }),
     ]);
+  };
+
+  const onPokemonInfoChange = (pokeinfo) => {
+    if (pokeinfo.isAttack) {
+      return redetermineMove(pokeinfo.move.name, pokeinfo);
+    } else {
+      return pokeinfo;
+    }
   };
 
   React.useEffect(() => {
@@ -219,6 +256,7 @@ function DamageCalculator() {
     setMoveClassList(p0ke.data.move.classes);
     setMoveRangeList(p0ke.data.move.ranges);
     setWeatherList(Object.keys(p0ke.data.weather));
+    setTerrainList(Object.keys(p0ke.data.terrain));
     setWhereTheBattlePokemonList(p0ke.const.WhereTheBattlePokemons);
   }, []);
 
@@ -237,7 +275,7 @@ function DamageCalculator() {
       <GridContainer xs={12}>
         <GridItem xs={12} lg={6}>
           <CustomTabs
-            title="Type:"
+            title="条件:"
             headerColor="dark"
             tabs={[
               {
@@ -355,7 +393,9 @@ function DamageCalculator() {
                           }}
                           optionData={MoveTypeList}
                           autocompleteProps={{
-                            onChange: handleMoveInfoChange,
+                            onChange: (evt, newValue) => {
+                              handleMoveInfoChange("type", newValue);
+                            },
                             value: AttackerPokemon().move.type,
                             inputProps: {
                               color: "red",
@@ -372,7 +412,9 @@ function DamageCalculator() {
                           }}
                           optionData={MoveClassList}
                           autocompleteProps={{
-                            onChange: handleMoveInfoChange,
+                            onChange: (evt, newValue) => {
+                              handleMoveInfoChange("class", newValue);
+                            },
                             value: AttackerPokemon().move.class,
                           }}
                           noMargin
@@ -386,7 +428,9 @@ function DamageCalculator() {
                           }}
                           optionData={MoveRangeList}
                           autocompleteProps={{
-                            onChange: handleMoveInfoChange,
+                            onChange: (evt, newValue) => {
+                              handleMoveInfoChange("range", newValue);
+                            },
                             value: AttackerPokemon().move.range,
                           }}
                           noMargin
@@ -420,6 +464,13 @@ function DamageCalculator() {
                       icon: <CloudIcon />,
                       optionData: WeatherList,
                       labelText: "天候",
+                    },
+                    {
+                      type: "select",
+                      name: "terrain",
+                      icon: <CloudIcon />,
+                      optionData: TerrainList,
+                      labelText: "地形",
                     },
                     {
                       type: "checkbox",
@@ -569,7 +620,10 @@ function DamageCalculator() {
                   </CustomButton>
                 </GridItem>
                 <GridItem xs={12}>
-                  <CustomTable tableData={DamageData} />
+                  <DamageTable
+                    tableDamage={DamageData[0]}
+                    tableDamageRate={DamageData[1]}
+                  />
                 </GridItem>
               </GridContainer>
             </CardBody>
@@ -581,12 +635,18 @@ function DamageCalculator() {
           <PokestatsForm
             PokemonInfo={MyPokemonInfo}
             setPokemonInfo={setMyPokemonInfo}
+            onPokemonInfoChange={
+              IsMyPokeAttacker ? onPokemonInfoChange : () => {}
+            }
           />
         </GridItem>
         <GridItem xs={12} lg={6}>
           <PokestatsForm
             PokemonInfo={OpPokemonInfo}
             setPokemonInfo={setOpPokemonInfo}
+            onPokemonInfoChange={
+              IsMyPokeAttacker ? () => {} : onPokemonInfoChange
+            }
           />
         </GridItem>
       </GridContainer>
@@ -671,10 +731,11 @@ const initPokemonInfoObj = (isAttack = true) => {
 const initBattleSituationObj = () => {
   return {
     field: {
+      battleStyle: "シングル",
       weather: "ふつう",
+      terrain: "その他",
       isMudsportField: false,
       isWatersportField: false,
-      battleStyle: "シングル",
     },
     attacker: {
       helping_hand: false,

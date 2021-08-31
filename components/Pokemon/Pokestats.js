@@ -118,6 +118,8 @@ export default function PokestatsForm(props) {
           damage_fixed: mdata.damage_fixed,
         },
       };
+    } else {
+      return pokeinfo;
     }
   };
 

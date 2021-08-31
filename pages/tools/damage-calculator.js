@@ -155,7 +155,6 @@ function DamageCalculator() {
             Alv: Attacker.lv,
             weather: BattleSituation.field.weather,
           });
-          console.log([type, Object.keys(Attacker.ivs)]);
           var [power, powers] = Array.isArray(power)
             ? [power[0], power]
             : [power || parseInt(mdata.power) || 0, []];
@@ -275,9 +274,12 @@ function DamageCalculator() {
   return (
     <div>
       <Success>
-        {
-          "※ 第三世代の環境下でダメージ計算を行います。（詳しい計算の過程が知りたい方は、[F12] (Windows) or [Command]+[Option]+[I] (Mac) を押してChromeの開発者ツールを開き、[Console]タブを確認してください。"
-        }
+        <span style={{ fontWeight: "bold" }}>
+          ※
+          第三世代の環境下でダメージ計算を行います。（詳しい計算の過程が知りたい方は、[F12]
+          (Windows) or [Command]+[Option]+[I] (Mac)
+          を押してChromeの開発者ツールを開き、[Console]タブを確認してください。
+        </span>
       </Success>
       <GridContainer xs={12}>
         <GridItem xs={12} lg={6}>
@@ -642,18 +644,14 @@ function DamageCalculator() {
           <PokestatsForm
             PokemonInfo={MyPokemonInfo}
             setPokemonInfo={setMyPokemonInfo}
-            onPokemonInfoChange={
-              IsMyPokeAttacker ? onPokemonInfoChange : () => {}
-            }
+            onPokemonInfoChange={onPokemonInfoChange}
           />
         </GridItem>
         <GridItem xs={12} lg={6}>
           <PokestatsForm
             PokemonInfo={OpPokemonInfo}
             setPokemonInfo={setOpPokemonInfo}
-            onPokemonInfoChange={
-              IsMyPokeAttacker ? () => {} : onPokemonInfoChange
-            }
+            onPokemonInfoChange={onPokemonInfoChange}
           />
         </GridItem>
       </GridContainer>

@@ -316,7 +316,7 @@ function PokeMaterials() {
                   optionData={ItemList}
                   autocompleteProps={{
                     onChange: handleItemNameChange,
-                    inputValue: Item.name,
+                    value: Item.name,
                   }}
                 />
               </GridItem>

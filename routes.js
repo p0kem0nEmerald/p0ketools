@@ -21,6 +21,7 @@ import { GiBookmark } from "react-icons/gi";
 import { CgProfile } from "react-icons/cg";
 import { MdPermMedia } from "react-icons/md";
 import { HiOutlineTranslate } from "react-icons/hi";
+import { GoListOrdered } from "react-icons/go";
 
 const dashboardRoutes = [
   {
@@ -33,6 +34,12 @@ const dashboardRoutes = [
     path: "/pokedex",
     name: "Pokedex",
     icon: GiBookmark,
+    layout: "/tools",
+  },
+  {
+    path: "/poke-ranking",
+    name: "Pokemon Ranking",
+    icon: GoListOrdered,
     layout: "/tools",
   },
   {

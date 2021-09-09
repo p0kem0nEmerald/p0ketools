@@ -30,13 +30,14 @@ export default function PokestatsForm(props) {
   const [ItemList, setItemList] = React.useState([]);
   const [StatusList, setStatusList] = React.useState([]);
   const [AbilityList, setAbilityList] = React.useState([]);
+  const [EnableBadgeCorr, setEnableBadgeCorr] = React.useState(false);
   /**
    * Recalculate the Pokemon Stats.
    * @param {Array} pokeinfo The current parameters of "PokemonInfo".
    * @return {Array} Updated parameters of "PokemonInfo".
    */
-  const recalculatePokemonStats = (pokeinfo) => {
-    var [H, A, B, C, D, S] = p0ke.pokemon.calculate_statistics(
+  const recalculatePokemonStats = (pokeinfo, enable_badge_corr = false) => {
+    var stats = p0ke.pokemon.calculate_statistics(
       pokeinfo.pokemon,
       Object.values(pokeinfo.ivs).map((e) => {
         return parseInt(e);
@@ -47,6 +48,9 @@ export default function PokestatsForm(props) {
       pokeinfo.nature,
       parseInt(pokeinfo.lv)
     );
+    var [H, A, B, C, D, S] = enable_badge_corr
+      ? stats.map((e) => Math.floor(e * 1.1))
+      : stats;
     return {
       ...pokeinfo,
       rstats: {
@@ -125,18 +129,22 @@ export default function PokestatsForm(props) {
 
   /**
    * Update the Pokemon Nature and what follows.
-   * @param {string} nature The name of nature
+   * @param {string} natureString The option name of nature
    * @param {Array} pokeinfo The current parameters of "PokemonInfo".
    * @return {Array} Updated parameters of "PokemonInfo".
    */
-  const updatePokemonNature = (nature, pokeinfo) => {
-    return {
-      ...pokeinfo,
-      nature: nature,
-      naturecorr: [1].concat(
-        p0ke.data.nature.id2corr[p0ke.data.nature.name2id[nature]]
-      ),
-    };
+  const updatePokemonNature = (natureString, pokeinfo) => {
+    if (natureString) {
+      let nature = natureString.split(" (")[0];
+      return {
+        ...pokeinfo,
+        nature: nature,
+        natureString: natureString,
+        naturecorr: [1].concat(
+          p0ke.data.nature.id2corr[p0ke.data.nature.name2id[nature]]
+        ),
+      };
+    }
   };
 
   /**
@@ -204,13 +212,13 @@ export default function PokestatsForm(props) {
   /* <--- Pokemon Name --- */
   const handlePokemonNameChange = (_, newValue) => {
     var pokeinfo = updatePokemonName(newValue, PokemonInfo);
-    pokeinfo = recalculatePokemonStats(pokeinfo);
+    pokeinfo = recalculatePokemonStats(pokeinfo, EnableBadgeCorr);
     setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Nature --- */
   const handlePokemonNatureChange = (_, newValue) => {
     var pokeinfo = updatePokemonNature(newValue, PokemonInfo);
-    pokeinfo = recalculatePokemonStats(pokeinfo);
+    pokeinfo = recalculatePokemonStats(pokeinfo, EnableBadgeCorr);
     setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Status --- */
@@ -221,7 +229,7 @@ export default function PokestatsForm(props) {
   /* <--- Pokemon Nurturing (lv, ivs, evs) --- */
   const handlePokemonNurturingChange = (event) => {
     var pokeinfo = updateInputValue(event, PokemonInfo);
-    var pokeinfo = recalculatePokemonStats(pokeinfo);
+    var pokeinfo = recalculatePokemonStats(pokeinfo, EnableBadgeCorr);
     setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
   /* <--- Pokemon Ability --- */
@@ -244,6 +252,11 @@ export default function PokestatsForm(props) {
     var pokeinfo = updateInputValue(event, PokemonInfo);
     setPokemonInfo(onPokemonInfoChange(pokeinfo));
   };
+  const handleBadgeCorrChange = () => {
+    let enable_badge_corr = !EnableBadgeCorr;
+    setPokemonInfo(recalculatePokemonStats(PokemonInfo, enable_badge_corr));
+    setEnableBadgeCorr(enable_badge_corr);
+  };
 
   /* <--- Initialization --- */
   React.useEffect(() => {
@@ -251,7 +264,8 @@ export default function PokestatsForm(props) {
     var StatusList = Object.keys(p0ke.data.status.main);
     setStatusList(StatusList);
     var pokeinfo = updatePokemonStatus(
-      p0ke.utils.randomSelect(StatusList),
+      // p0ke.utils.randomSelect(StatusList),
+      "ふつう",
       PokemonInfo
     );
     // Set a random Pokemon
@@ -262,10 +276,27 @@ export default function PokestatsForm(props) {
       pokeinfo
     );
     // Set a random nature
-    var NatureList = Object.keys(p0ke.data.nature.name2id);
+    // var NatureList = Object.keys(p0ke.data.nature.name2id);
+    var NatureList = [];
+    for (let nature in p0ke.data.nature.name2id) {
+      var natureOption = [nature, "", ""];
+      p0ke.data.nature.id2corr[p0ke.data.nature.name2id[nature]].forEach(
+        (e, i) => {
+          if (e != 1) {
+            if (e > 1) {
+              natureOption[1] = ` (${["A", "B", "C", "D", "S"][i]}↑`;
+            } else {
+              natureOption[2] = `${["A", "B", "C", "D", "S"][i]}↓)`;
+            }
+          }
+        }
+      );
+      NatureList.push(natureOption.join(""));
+    }
     setNatureList(NatureList);
     pokeinfo = updatePokemonNature(
-      p0ke.utils.randomSelect(NatureList),
+      // p0ke.utils.randomSelect(NatureList),
+      "がんばりや",
       pokeinfo
     );
     // Set a random item
@@ -273,7 +304,11 @@ export default function PokestatsForm(props) {
       (e) => p0ke.data.item[e].is_practival
     );
     setItemList(ItemList);
-    pokeinfo = updatePokemonItem(p0ke.utils.randomSelect(ItemList), pokeinfo);
+    pokeinfo = updatePokemonItem(
+      // p0ke.utils.randomSelect(ItemList),
+      "なし",
+      pokeinfo
+    );
     // Calculate the real stats.
     pokeinfo = recalculatePokemonStats(pokeinfo);
     // Initialize with 'pokeinfo' parameters
@@ -382,7 +417,7 @@ export default function PokestatsForm(props) {
                 optionData={NatureList}
                 autocompleteProps={{
                   onChange: handlePokemonNatureChange,
-                  value: PokemonInfo.nature,
+                  value: PokemonInfo.natureString,
                 }}
               />
             </GridItem>
@@ -435,6 +470,10 @@ export default function PokestatsForm(props) {
                                   ? "red"
                                   : PokemonInfo.naturecorr[i] < 1
                                   ? "blue"
+                                  : "inherit",
+                              backgroundColor:
+                                EnableBadgeCorr & (target.key == "rstats")
+                                  ? "#f4d19b"
                                   : "inherit",
                               margin: "5px",
                               paddingLeft: "5px",
@@ -514,7 +553,25 @@ export default function PokestatsForm(props) {
                 }}
               />
             </GridItem>
-            <GridItem xs={6}>
+            <GridItem xs={2}>
+              <GridContainer xs={12}>
+                <GridItem xs={2}>
+                  <Checkbox
+                    id="enableBadge"
+                    checked={EnableBadgeCorr}
+                    onClick={handleBadgeCorrChange}
+                    checkedIcon={<Check className={classes.checkedIcon} />}
+                    icon={<Check className={classes.uncheckedIcon} />}
+                  />
+                </GridItem>
+                <GridItem xs={2}>
+                  <label for="enableBadge" style={{ color: "black" }}>
+                    バッジ
+                  </label>
+                </GridItem>
+              </GridContainer>
+            </GridItem>
+            <GridItem xs={4}>
               <CustomAutocomplete
                 labelText="Status"
                 // id={`${id}-Status`}
@@ -571,6 +628,7 @@ PokestatsForm.defaultProps = {
     ability: "",
     abilities: [""],
     nature: "",
+    natureString: "",
     naturecorr: Array(6).fill(1),
     happiness: 255,
     rank: 0,

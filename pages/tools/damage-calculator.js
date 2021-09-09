@@ -691,6 +691,7 @@ const initPokemonInfoObj = (isAttack = true) => {
     ability: "",
     abilities: [""],
     nature: "",
+    natureString: "",
     naturecorr: Array(6).fill(1),
     happiness: 255,
     rank: 0,

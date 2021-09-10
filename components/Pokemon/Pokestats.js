@@ -49,7 +49,7 @@ export default function PokestatsForm(props) {
       parseInt(pokeinfo.lv)
     );
     var [H, A, B, C, D, S] = enable_badge_corr
-      ? stats.map((e) => Math.floor(e * 1.1))
+      ? stats.map((e, i) => (i == 0 ? e : Math.floor(e * 1.1)))
       : stats;
     return {
       ...pokeinfo,
@@ -472,7 +472,9 @@ export default function PokestatsForm(props) {
                                   ? "blue"
                                   : "inherit",
                               backgroundColor:
-                                EnableBadgeCorr & (target.key == "rstats")
+                                EnableBadgeCorr &
+                                (target.key == "rstats") &
+                                (i > 0)
                                   ? "#ffdede"
                                   : "inherit",
                               margin: "5px",

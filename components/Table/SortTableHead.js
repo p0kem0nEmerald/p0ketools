@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 // @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 // layout for this page
 import Admin from "layouts/Admin.js";
 // core components
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 750,
+    minWidth: 650,
   },
   visuallyHidden: {
     border: 0,
@@ -42,25 +42,42 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    // backgroundColor: theme.palette.common.black,
+    backgroundColor: "#eee",
+    // color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableSortLabel = withStyles((theme) => ({
+  // active: {
+  //   color: "yellow",
+  //   backgroundColor: "red",
+  // },
+}))(TableSortLabel);
+
 export default function SortTableHead(props) {
   const classes = useStyles();
-  const { order, orderBy, onRequestSort, headCells, title } = props;
+  const { order, orderBy, onRequestSort, headCells } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 
   return (
     <TableHead>
-      <Typography>{title}</Typography>
       <TableRow>
         {headCells.map((headCell) => (
-          <TableCell
+          <StyledTableCell
             key={headCell.id}
             align={headCell.numeric ? "right" : "left"}
             padding="normal"
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
+            <StyledTableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
@@ -71,8 +88,8 @@ export default function SortTableHead(props) {
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>
               ) : null}
-            </TableSortLabel>
-          </TableCell>
+            </StyledTableSortLabel>
+          </StyledTableCell>
         ))}
       </TableRow>
     </TableHead>

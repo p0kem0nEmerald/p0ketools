@@ -86,6 +86,10 @@ export default class MyApp extends App {
           />
           <title>p0ketools ~エメラルドを風化させないChannel~</title>
           <script src="https://p0kem0nemerald.github.io/static/js/p0keutils.js"></script>
+          <link
+            rel="stylesheet"
+            href="https://p0kem0nemerald.github.io/static/css/main.css"
+          />
         </Head>
         <Layout>
           <Component {...pageProps} />

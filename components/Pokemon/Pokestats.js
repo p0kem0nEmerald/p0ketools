@@ -473,7 +473,7 @@ export default function PokestatsForm(props) {
                                   : "inherit",
                               backgroundColor:
                                 EnableBadgeCorr & (target.key == "rstats")
-                                  ? "#f4d19b"
+                                  ? "#ffdede"
                                   : "inherit",
                               margin: "5px",
                               paddingLeft: "5px",

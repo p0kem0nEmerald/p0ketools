@@ -203,14 +203,20 @@ function Pokedex() {
                 tabName: "Ruby",
                 tabIconImage:
                   "https://p0kem0nemerald.github.io/static/images/icon/game_groudon_icon.png",
-                tabContent: <Typography>{pokemonDescription.ruby}</Typography>,
+                tabContent: (
+                  <Typography style={{ fontFamily: "pkmnfont" }}>
+                    {pokemonDescription.ruby}
+                  </Typography>
+                ),
               },
               {
                 tabName: "Sapphire",
                 tabIconImage:
                   "https://p0kem0nemerald.github.io/static/images/icon/game_kyogre_icon.png",
                 tabContent: (
-                  <Typography>{pokemonDescription.sapphire}</Typography>
+                  <Typography style={{ fontFamily: "pkmnfont" }}>
+                    {pokemonDescription.sapphire}
+                  </Typography>
                 ),
               },
               {
@@ -218,7 +224,9 @@ function Pokedex() {
                 tabIconImage:
                   "https://p0kem0nemerald.github.io/static/images/icon/game_rayquaza_icon.png",
                 tabContent: (
-                  <Typography>{pokemonDescription.emerald}</Typography>
+                  <Typography style={{ fontFamily: "pkmnfont" }}>
+                    {pokemonDescription.emerald}
+                  </Typography>
                 ),
               },
             ]}

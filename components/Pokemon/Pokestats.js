@@ -31,6 +31,14 @@ export default function PokestatsForm(props) {
   const [StatusList, setStatusList] = React.useState([]);
   const [AbilityList, setAbilityList] = React.useState([]);
   const [EnableBadgeCorr, setEnableBadgeCorr] = React.useState(false);
+  const [TrainerList, setTrainerList] = React.useState([]);
+  const [TrainerPokemonList, setTrainerPokemonList] = React.useState([]);
+  const [TrainerPokemonData, setTrainerPokemonData] = React.useState({
+    name: "",
+    img: "",
+    pokemon: "",
+  });
+
   /**
    * Recalculate the Pokemon Stats.
    * @param {Array} pokeinfo The current parameters of "PokemonInfo".
@@ -209,6 +217,53 @@ export default function PokestatsForm(props) {
     return pokeinfo;
   };
 
+  const parseTrainerPokeinfo = (trainer_pokeinfo) => {
+    var pokeinfo = {};
+    for (let key in trainer_pokeinfo) {
+      let value = trainer_pokeinfo[key];
+      if (typeof value != "string" || value != "") {
+        if (key == "nature") {
+          pokeinfo = updatePokemonNature(
+            p0ke.nature.toReadableNature(value),
+            pokeinfo
+          );
+        } else if (key == "item") {
+          pokeinfo = updatePokemonItem(value, pokeinfo);
+        } else {
+          pokeinfo[key] = value;
+        }
+      }
+    }
+    return pokeinfo;
+  };
+
+  const applyTrainerPokemon = (trainer_pokedata) => {
+    setTrainerPokemonData(trainer_pokedata);
+    let trainer_pokeinfo = parseTrainerPokeinfo(
+      p0ke.data.battle[trainer_pokedata.trainer].pokemons[
+        parseInt(trainer_pokedata.pokemon.split(".")[0])
+      ]
+    );
+    let default_pokeinfo = updatePokemonName(
+      trainer_pokeinfo.pokemon,
+      PokemonInfo
+    );
+    let pokeinfo = {
+      ...PokemonInfo,
+      ...default_pokeinfo,
+      ...trainer_pokeinfo,
+      img: {
+        ...PokemonInfo.img,
+        ...default_pokeinfo.img,
+        ...trainer_pokeinfo.img,
+      },
+    };
+
+    setPokemonInfo(
+      onPokemonInfoChange(recalculatePokemonStats(pokeinfo, EnableBadgeCorr))
+    );
+  };
+
   /* <--- Pokemon Name --- */
   const handlePokemonNameChange = (_, newValue) => {
     var pokeinfo = updatePokemonName(newValue, PokemonInfo);
@@ -257,6 +312,27 @@ export default function PokestatsForm(props) {
     setPokemonInfo(recalculatePokemonStats(PokemonInfo, enable_badge_corr));
     setEnableBadgeCorr(enable_badge_corr);
   };
+  const handleTrainerChange = (_, newValue) => {
+    if (newValue !== null && newValue in p0ke.data.battle) {
+      let TrainerInfo = p0ke.data.battle[newValue];
+      let TrainerPokelist = TrainerInfo.pokemons.map(
+        (e, i) => `${i}.${e.pokemon}`
+      );
+      setTrainerPokemonList(TrainerPokelist);
+      applyTrainerPokemon({
+        trainer: newValue,
+        img: `https://p0kem0nemerald.github.io/static/images/trainer/overworld/${TrainerInfo.fn}`,
+        pokemon: TrainerPokelist[0],
+      });
+    }
+  };
+  const handleTrainerPokemonChange = (_, newValue) => {
+    if (newValue !== null && TrainerPokemonList.includes(newValue))
+      applyTrainerPokemon({
+        ...TrainerPokemonData,
+        pokemon: newValue,
+      });
+  };
 
   /* <--- Initialization --- */
   React.useEffect(() => {
@@ -276,27 +352,12 @@ export default function PokestatsForm(props) {
       pokeinfo
     );
     // Set a random nature
-    // var NatureList = Object.keys(p0ke.data.nature.name2id);
-    var NatureList = [];
-    for (let nature in p0ke.data.nature.name2id) {
-      var natureOption = [nature, "", ""];
-      p0ke.data.nature.id2corr[p0ke.data.nature.name2id[nature]].forEach(
-        (e, i) => {
-          if (e != 1) {
-            if (e > 1) {
-              natureOption[1] = ` (${["A", "B", "C", "D", "S"][i]}↑`;
-            } else {
-              natureOption[2] = `${["A", "B", "C", "D", "S"][i]}↓)`;
-            }
-          }
-        }
-      );
-      NatureList.push(natureOption.join(""));
-    }
+    var NatureList = Object.keys(p0ke.data.nature.name2id).map((nature) =>
+      p0ke.nature.toReadableNature(nature)
+    );
     setNatureList(NatureList);
     pokeinfo = updatePokemonNature(
-      // p0ke.utils.randomSelect(NatureList),
-      "がんばりや",
+      "がんばりや", // p0ke.utils.randomSelect(NatureList),
       pokeinfo
     );
     // Set a random item
@@ -305,10 +366,11 @@ export default function PokestatsForm(props) {
     );
     setItemList(ItemList);
     pokeinfo = updatePokemonItem(
-      // p0ke.utils.randomSelect(ItemList),
-      "なし",
+      "なし", // p0ke.utils.randomSelect(ItemList),
       pokeinfo
     );
+    setTrainerList([""].concat(Object.keys(p0ke.data.battle)));
+    setTrainerPokemonList([]);
     // Calculate the real stats.
     pokeinfo = recalculatePokemonStats(pokeinfo);
     // Initialize with 'pokeinfo' parameters
@@ -585,6 +647,35 @@ export default function PokestatsForm(props) {
                 autocompleteProps={{
                   onChange: handleStatusChange,
                   value: PokemonInfo.status,
+                }}
+              />
+            </GridItem>
+          </GridContainer>
+          <GridContainer xs={12}>
+            <GridItem xs={6}>
+              <CustomAutocomplete
+                labelText="Trainer"
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                backgroundImage={TrainerPokemonData.img}
+                optionData={TrainerList}
+                autocompleteProps={{
+                  onChange: handleTrainerChange,
+                  value: TrainerPokemonData.trainer,
+                }}
+              />
+            </GridItem>
+            <GridItem xs={6}>
+              <CustomAutocomplete
+                labelText="Pokemon"
+                formControlProps={{
+                  fullWidth: true,
+                }}
+                optionData={TrainerPokemonList}
+                autocompleteProps={{
+                  onChange: handleTrainerPokemonChange,
+                  value: TrainerPokemonData.pokemon,
                 }}
               />
             </GridItem>

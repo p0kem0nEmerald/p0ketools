@@ -1,16 +1,16 @@
-import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
 import Admin from "layouts/Admin.js";
-// core components
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
 import Card from "components/Card/Card.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
-import YouTubeCard from "components/Card/YouTubeCard.js";
+import GridContainer from "components/Grid/GridContainer.js";
+// core components
+import GridItem from "components/Grid/GridItem.js";
+import React from "react";
 import { TwitterTimelineEmbed } from "react-twitter-embed";
+import YouTubeCard from "components/Card/YouTubeCard.js";
+// @material-ui/core components
+import { makeStyles } from "@material-ui/core/styles";
 
 const styles = {
   cardCategoryWhite: {
@@ -85,7 +85,7 @@ function UserProfile() {
                 <img
                   src={`${
                     process.env.ABS_URL_PREFIX || ""
-                  }/static/images/icon/favicon.png`}
+                  }/static/images/_site/favicon/HOME.png`}
                   alt="Profile Icon"
                 />
               </a>

@@ -22,6 +22,7 @@ import { CgProfile } from "react-icons/cg";
 import { MdPermMedia } from "react-icons/md";
 import { HiOutlineTranslate } from "react-icons/hi";
 import { GoListOrdered } from "react-icons/go";
+import { FaFileInvoice } from "react-icons/fa";
 
 const dashboardRoutes = [
   {
@@ -46,6 +47,12 @@ const dashboardRoutes = [
     path: "/poke-english",
     name: "Pokemon English",
     icon: HiOutlineTranslate,
+    layout: "/tools",
+  },
+  {
+    path: "/poke-resume",
+    name: "Pokemon Resume",
+    icon: FaFileInvoice,
     layout: "/tools",
   },
   {

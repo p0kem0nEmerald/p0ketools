@@ -1,11 +1,14 @@
-import React from "react";
-import PropTypes from "prop-types";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
 import Admin from "layouts/Admin.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+import CardHeader from "components/Card/CardHeader.js";
+import Checkbox from "@material-ui/core/Checkbox";
 // core components
 import Paper from "@material-ui/core/Paper";
+import PropTypes from "prop-types";
+import React from "react";
+import SortTableHead from "components/Table/SortTableHead";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,14 +18,10 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
-import Checkbox from "@material-ui/core/Checkbox";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-
-import SortTableHead from "components/Table/SortTableHead";
-import noimage from "../../assets/images/noimage.png";
 import { Typography } from "@material-ui/core";
+// @material-ui/core components
+import { makeStyles } from "@material-ui/core/styles";
+import noimage from "../../assets/images/noimage.png";
 
 const styles = {
   cardCategoryWhite: {

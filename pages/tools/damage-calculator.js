@@ -1,38 +1,36 @@
-import React from "react";
-// @material-ui/core
-import { makeStyles } from "@material-ui/core/styles";
-import Checkbox from "@material-ui/core/Checkbox";
-// @material-ui/icons
-import PanToolIcon from "@material-ui/icons/PanTool";
-import PublicIcon from "@material-ui/icons/Public";
-import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import AccessibilityIcon from "@material-ui/icons/Accessibility";
-import Check from "@material-ui/icons/Check";
-import PeopleIcon from "@material-ui/icons/People";
-import PersonIcon from "@material-ui/icons/Person";
-import CloudIcon from "@material-ui/icons/Cloud";
-import PlaceIcon from "@material-ui/icons/Place";
-import TerrainIcon from "@material-ui/icons/Terrain";
 // layout for this page
 import Admin from "layouts/Admin.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+import CardHeader from "components/Card/CardHeader.js";
+import Check from "@material-ui/icons/Check";
+import Checkbox from "@material-ui/core/Checkbox";
+import CloudIcon from "@material-ui/icons/Cloud";
+import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
+import CustomButton from "components/CustomButtons/Button.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import CustomTabs from "components/CustomTabs/CustomTabs.js";
+import DamageTable from "components/Table/DamageTable.js";
+import FormTable from "components/Table/FormTable.js";
+import GridContainer from "components/Grid/GridContainer.js";
 // core components
 import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
-
-import FormTable from "components/Table/FormTable.js";
-import CustomTabs from "components/CustomTabs/CustomTabs.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
+// @material-ui/icons
+import PanToolIcon from "@material-ui/icons/PanTool";
+import PeopleIcon from "@material-ui/icons/People";
+import PersonIcon from "@material-ui/icons/Person";
+import PlaceIcon from "@material-ui/icons/Place";
 import PokestatsForm from "components/Pokemon/Pokestats.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
-import CustomButton from "components/CustomButtons/Button.js";
-import DamageTable from "components/Table/DamageTable.js";
+import PublicIcon from "@material-ui/icons/Public";
+import React from "react";
+import SportsHandballIcon from "@material-ui/icons/SportsHandball";
 import Success from "components/Typography/Success.js";
-
-import dashboardStyle from "../../assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
+import TerrainIcon from "@material-ui/icons/Terrain";
 import checkboxAdnRadioStyle from "assets/jss/nextjs-material-dashboard/checkboxAdnRadioStyle.js";
+import dashboardStyle from "../../assets/jss/nextjs-material-dashboard/views/dashboardStyle.js";
+// @material-ui/core
+import { makeStyles } from "@material-ui/core/styles";
 
 const styles = {
   ...dashboardStyle,

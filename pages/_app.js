@@ -1,3 +1,8 @@
+import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
+
+import App from "next/app";
+import Head from "next/head";
+import PageChange from "components/PageChange/PageChange.js";
 /*!
 
 =========================================================
@@ -17,13 +22,7 @@
 */
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "next/app";
-import Head from "next/head";
 import Router from "next/router";
-
-import PageChange from "components/PageChange/PageChange.js";
-
-import "assets/css/nextjs-material-dashboard.css?v=1.1.0";
 
 Router.events.on("routeChangeStart", (url) => {
   console.log(`Loading: ${url}`);

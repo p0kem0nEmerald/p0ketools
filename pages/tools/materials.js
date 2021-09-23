@@ -1,16 +1,16 @@
+// layout for this page
+import Admin from "layouts/Admin.js";
+import Card from "components/Card/Card.js";
+import CardBody from "components/Card/CardBody.js";
+import CardHeader from "components/Card/CardHeader.js";
+import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
+import GridContainer from "components/Grid/GridContainer.js";
+// core components
+import GridItem from "components/Grid/GridItem.js";
 import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
-// layout for this page
-import Admin from "layouts/Admin.js";
-// core components
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
-import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
-import CardBody from "components/Card/CardBody.js";
 import noimage from "../../assets/images/noimage.png";
 
 const styles = {

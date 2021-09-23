@@ -1,20 +1,21 @@
-import React from "react";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
 // layout for this page
 import Admin from "layouts/Admin.js";
-// core components
-import GridItem from "components/Grid/GridItem.js";
-import GridContainer from "components/Grid/GridContainer.js";
-import CustomInput from "components/CustomInput/CustomInput.js";
-import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
-import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
-import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import StatsRadarChart from "components/Pokemon/StatsRadarChart.js";
-import { Typography } from "@material-ui/core";
+import CardHeader from "components/Card/CardHeader.js";
+import CustomAutocomplete from "components/CustomAutocomplete/CustomAutocomplete.js";
+import CustomInput from "components/CustomInput/CustomInput.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
+import GridContainer from "components/Grid/GridContainer.js";
+import GridItem from "components/Grid/GridItem.js";
+import React from "react";
+import StatsRadarChart from "components/Pokemon/StatsRadarChart.js";
+import Table from "components/Table/Table.js";
+import { Typography } from "@material-ui/core";
+import groudonIcon from "assets/images/game_groudon_icon.png";
+import kyogreIcon from "assets/images/game_kyogre_icon.png";
+import { makeStyles } from "@material-ui/core/styles";
+import rayquzaIcon from "assets/images/game_rayquaza_icon.png";
 
 const styles = {
   cardCategoryWhite: {
@@ -201,8 +202,7 @@ function Pokedex() {
             tabs={[
               {
                 tabName: "Ruby",
-                tabIconImage:
-                  "https://p0kem0nemerald.github.io/static/images/icon/game_groudon_icon.png",
+                tabIconImage: groudonIcon,
                 tabContent: (
                   <Typography style={{ fontFamily: "pkmnfont" }}>
                     {pokemonDescription.ruby}
@@ -211,8 +211,7 @@ function Pokedex() {
               },
               {
                 tabName: "Sapphire",
-                tabIconImage:
-                  "https://p0kem0nemerald.github.io/static/images/icon/game_kyogre_icon.png",
+                tabIconImage: kyogreIcon,
                 tabContent: (
                   <Typography style={{ fontFamily: "pkmnfont" }}>
                     {pokemonDescription.sapphire}
@@ -221,8 +220,7 @@ function Pokedex() {
               },
               {
                 tabName: "Emerald",
-                tabIconImage:
-                  "https://p0kem0nemerald.github.io/static/images/icon/game_rayquaza_icon.png",
+                tabIconImage: rayquzaIcon,
                 tabContent: (
                   <Typography style={{ fontFamily: "pkmnfont" }}>
                     {pokemonDescription.emerald}

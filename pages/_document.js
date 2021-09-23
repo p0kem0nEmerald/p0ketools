@@ -1,5 +1,6 @@
+import Document, { Head, Html, Main, NextScript } from "next/document";
+
 import React from "react";
-import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles";
 
 class MyDocument extends Document {
@@ -9,11 +10,14 @@ class MyDocument extends Document {
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content="#000000" />
-          <link rel="shortcut icon" href="/static/images/icon/favicon.png" />
+          <link
+            rel="shortcut icon"
+            href="/static/images/_site/favicon/p0ketools.png"
+          />
           <link
             rel="apple-touch-icon"
-            sizes="76x76"
-            href="/static/images/icon/76x76.png"
+            sizes="180x180"
+            href="/static/images/_site/apple-touch-icon/180x180.png"
           />
           {/* Fonts and icons */}
           <link
